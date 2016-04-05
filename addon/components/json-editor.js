@@ -58,7 +58,7 @@ export default Ember.Component.extend({
     'history',
     'name',
     'indentation',
-    'error',
+    'onError',
     function() {
       // console.log('options');
 
@@ -70,13 +70,11 @@ export default Ember.Component.extend({
         'history',
         'name',
         'indentation',
-        'error'
+        'onError'
       ]);
       // Rename
-      props.change = props._change;
+      props.onChange = props._change;
       delete props._change;
-      // Add reference to this component
-      props.component = this;
       return props;
     }),
 
