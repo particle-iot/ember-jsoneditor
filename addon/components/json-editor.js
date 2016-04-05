@@ -75,6 +75,8 @@ export default Ember.Component.extend({
       // Rename
       props.onChange = props._change;
       delete props._change;
+      // Add reference to this component
+      props.component = this;
       return props;
     }),
 
