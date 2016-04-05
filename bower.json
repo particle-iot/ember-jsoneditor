@@ -12,7 +12,7 @@
     "jquery": "^1.11.1",
     "loader.js": "ember-cli/loader.js#3.2.0",
     "qunit": "~1.17.1",
-    "jsoneditor": "~4.2.1"
+    "jsoneditor": "~5.2.0"
   },
   "devDependencies": {}
 }
