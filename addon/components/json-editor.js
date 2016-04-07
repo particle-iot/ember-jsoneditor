@@ -98,7 +98,8 @@ export default Ember.Component.extend({
   on change of contents
   */
   change: function() {
-    // console.log('JSON Editor changed!');
+    const onChangeFunc = this.get('onChange');
+    onChangeFunc();
   },
 
   /**
@@ -107,7 +108,8 @@ export default Ember.Component.extend({
    The callback is only invoked for errors triggered by a users action.
   */
   error: function(error) {
-    // console.error('An error occured: ', error);
+    const onErrorFunc = this.get('onError');
+    onErrorFunc(error);
   },
 
   /**
