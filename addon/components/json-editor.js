@@ -18,7 +18,7 @@ export default Ember.Component.extend({
   /**
 
   */
-  editor: Ember.computed('options', 'json', function() {
+  editor: Ember.computed('options', 'json', 'raw', function() {
     var self = this;
     var editor = self.get('_editor');
     // console.log('editor', editor);
@@ -31,7 +31,13 @@ export default Ember.Component.extend({
       } else {
         var options = self.get('options');
         var json = self.get('json');
-        editor = new JSONEditor(container, options, json);
+        var raw = self.get('raw');
+        editor = new JSONEditor(container, options);
+        if (raw) {
+          editor.setText(json);
+        } else {
+          editor.set(json);
+        }
         // console.log('new editor', editor);
         self.set('_editor', editor);
         return editor;
@@ -48,6 +54,11 @@ export default Ember.Component.extend({
   json: {},
 
   /**
+  Raw mode it to get and set text instead of objects to the JSON editor
+  */
+  raw: false,
+
+  /**
   Object with options.
   */
   options: Ember.computed(
@@ -59,6 +70,7 @@ export default Ember.Component.extend({
     'name',
     'indentation',
     'onError',
+    'onEditable',
     function() {
       // console.log('options');
 
@@ -70,7 +82,8 @@ export default Ember.Component.extend({
         'history',
         'name',
         'indentation',
-        'onError'
+        'onError',
+        'onEditable'
       ]);
       // Rename
       props.onChange = props._change;
@@ -99,7 +112,9 @@ export default Ember.Component.extend({
   */
   change: function() {
     const onChangeFunc = this.get('onChange');
-    onChangeFunc();
+    if (onChangeFunc) {
+      onChangeFunc();
+    }
   },
 
   /**
@@ -109,7 +124,19 @@ export default Ember.Component.extend({
   */
   error: function(error) {
     const onErrorFunc = this.get('onError');
-    onErrorFunc(error);
+    if (onErrorFunc) {
+      onErrorFunc(error);
+    }
+  },
+
+  /**
+   Set a callback method to see if the editor should be editable.
+  */
+  editable: function() {
+    const onEditableFunc = this.get('onEditable');
+    if (onEditableFunc) {
+      onEditableFunc();
+    }
   },
 
   /**
@@ -130,8 +157,8 @@ export default Ember.Component.extend({
       return;
     }
     try {
-      var json = editor.get();
-      //
+      var raw = self.get('raw');
+      var json = raw ? editor.getText() : editor.get();
       self.set('_updating', true);
       self.set('json', json);
       self.set('_updating', false);
@@ -203,10 +230,7 @@ export default Ember.Component.extend({
              }
         }
     }
-    if (Ember.isEmpty(propertyKey)) {
-      // console.log('Could not find propertyKey', data);
-    } else {
-      // console.log('Found key!', propertyKey, data);
+    if (!Ember.isEmpty(propertyKey)) {
       controller.addObserver(propertyKey, this, this.jsonDidChange);
     }
     this.editorDidChange();
@@ -221,7 +245,12 @@ export default Ember.Component.extend({
     if (Ember.isEqual(self.get('_updating'), false)) {
       var editor = self.get('editor');
       var json = self.get('json');
-      editor.set(json);
+      var raw = self.get('raw');
+      if (raw) {
+        editor.setText(json);
+      } else {
+        editor.set(json);
+      }
     }
   }),
 
