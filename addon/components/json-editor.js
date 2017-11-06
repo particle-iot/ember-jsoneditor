@@ -232,8 +232,17 @@ export default Ember.Component.extend({
     }
     if (!Ember.isEmpty(propertyKey)) {
       controller.addObserver(propertyKey, this, this.jsonDidChange);
+      this.set('propertyKey', propertyKey);
     }
     this.editorDidChange();
+  },
+
+  willDestroyElement: function() {
+    var propertyKey = this.get('propertyKey');
+    if (propertyKey) {
+      var controller = this.get('targetObject');
+      controller.removeObserver(propertyKey, this, this.jsonDidChange);
+    }
   },
 
   /**
