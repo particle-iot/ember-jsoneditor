@@ -1,7 +1,10 @@
 {
-  "name": "ember-jsoneditor",
+  "name": "@particle/ember-jsoneditor",
   "version": "0.1.3",
   "description": "Ember component to view, edit and format JSON.",
+  "publishConfig": {
+    "access": "public"
+  },
   "directories": {
     "doc": "doc",
     "test": "tests"
